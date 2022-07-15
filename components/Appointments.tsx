@@ -135,14 +135,17 @@ const AppointmentList: React.FC<any> = ({appointments, patientMap}) => {
 
 const Appointments: React.FC<any> = ({selectedDoctorId, patientMap}) => {
   console.log({selectedDoctorId})
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const handleStatusFilterClick = (status: string) => {
+    setSelectedStatus(status);
+  };
 
   const todaysDate = new Date().toISOString();
   const [filterDate, setFilterDate] = useState(todaysDate);
   const [appointments, setAppointments] = useState([]);
   const loadAppointments = async () => {
-    const appointments = await getAppointments({doctorId: selectedDoctorId, filterDate: filterDate});
+    const appointments = await getAppointments({doctorId: selectedDoctorId, filterDate: filterDate, selectedStatus: selectedStatus});
     setAppointments(appointments);
-    console.log(appointments)
   };
 
 
@@ -151,34 +154,12 @@ const Appointments: React.FC<any> = ({selectedDoctorId, patientMap}) => {
     if (selectedDoctorId) {
       loadAppointments();
     }
-  }, [selectedDoctorId]);
+  }, [selectedDoctorId, selectedStatus]);
 
-
-  const [selectedStatus, setSelectedStatus] = useState("all");
-  const handleStatusFilterClick = (status: string) => {
-    setSelectedStatus(status);
-  };
-
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const isToday = new Date(todaysDate).getDay() === new Date(filterDate).getDay();
-  const handleDateChange = (date: Date) => {
-    setShowDatePicker(false);
-    setFilterDate(date.toISOString());
-  }
-  
   return (
     <Container style={{ marginTop: "50px" }}>
       <HeaderText>Appointments</HeaderText>
       <AppointmentFilterContainer>
-        <div className="date-filter" onClick={(e) => setShowDatePicker(!showDatePicker)}>
-          {isToday ? "Today" : moment(filterDate).format("MM/DD/YY")}
-          <div className="date-picker-wrapper">
-            {showDatePicker && <DatePicker                 value={new Date(filterDate)}
- highlightCurrentDay={true} onChange={(newDate) => handleDateChange(newDate)} /> }
-          </div>
-        </div>
-
         <div className="status-filters">
           <div
             className="status-filter"
@@ -189,10 +170,10 @@ const Appointments: React.FC<any> = ({selectedDoctorId, patientMap}) => {
           </div>
           <div
             className="status-filter"
-            onClick={() => handleStatusFilterClick("upcoming")}
-            data-attr-selected={selectedStatus === "upcoming"}
+            onClick={() => handleStatusFilterClick("pending")}
+            data-attr-selected={selectedStatus === "pending"}
           >
-            <span>Upcoming</span>
+            <span>Pending</span>
           </div>
           <div
             className="status-filter"

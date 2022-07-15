@@ -37,7 +37,7 @@ const Welcome: React.FC<any> = ({
 }) => {
   return (
     <Container>
-      <HeaderText>Good Evening, Doctor Thomas!</HeaderText>
+      <HeaderText>Hello, Doctors!</HeaderText>
       <Text>Your daily doctor snapshot</Text>
       <StatBoxes className="stat-boxes">
         {doctors.map((doctor, index) => {

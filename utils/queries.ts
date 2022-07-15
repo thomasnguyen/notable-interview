@@ -4,11 +4,21 @@ export const getDoctors = () => {
   return fetch(`${server}/api/doctor`).then(res => res.json()).then(data => data)
 }
 
-export const getAppointments = ({doctorId, filterDate}) => {
-  return fetch(`${server}/api/appointment?` +  new URLSearchParams({
+export const  getAppointments = ({doctorId, filterDate, selectedStatus}) => {
+  let params =  new URLSearchParams({
     doctorId: doctorId,
-    filterDate: filterDate
-})).then(res => res.json()).then(data => data)
+    filterDate: filterDate,
+    selectedStatus: selectedStatus
+  })
+
+  if (selectedStatus === 'all'){
+    params =  new URLSearchParams({
+      doctorId: doctorId,
+      filterDate: filterDate,
+    })
+  }
+
+  return fetch(`${server}/api/appointment?` +  params).then(res => res.json()).then(data => data)
 }
 
 export const getPatients = () => {
